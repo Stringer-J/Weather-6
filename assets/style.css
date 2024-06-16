@@ -24,10 +24,6 @@
     justify-content: center;
 }
 
-.header h3 {
-
-}
-
 .searchInfoContainer {
     background-color: aquamarine;
     position: absolute;
@@ -43,6 +39,7 @@
 
     display: flex;
 }
+
 .search {
     background-color: brown;
     position: relative;

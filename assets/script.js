@@ -2,14 +2,12 @@ const searchText = document.getElementById('searchCity'); //finds input box for 
 const searchButton = document.getElementById('searchButton'); //finds search button
 const infoBox = document.querySelector('.info'); //finds info div for printing weather information
 
-const openKey = '06a798cc207b1bc18fa799b37f5e6c32';
-
-// const lat = '30.2672';  // Latitude of Austin, TX
-// const lon = '-97.7431'; // Longitude of Austin, TX
+const openKey = '06a798cc207b1bc18fa799b37f5e6c32'; //api key so api actually works
 
 function weatherData(lat, lon) {
+
     const openWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${openKey}`;
-    // Uses allOrigins as a proxy for openWeather api to bypass CORS error
+    //uses allOrigins as a proxy for openWeather api to bypass CORS error
     const allOrigins = `https://api.allorigins.win/get?url=${encodeURIComponent(openWeather)}`;
 
     fetch(allOrigins)
@@ -20,11 +18,12 @@ function weatherData(lat, lon) {
             return response.json();
         })
         .then(data => {
-            const responseData = JSON.parse(data.contents); // AllOrigins wraps the response in "contents"
+            const responseData = JSON.parse(data.contents); //allOrigins wraps the response in "contents"
             console.log(responseData);
 
             const cityName = responseData.name;
             const cityDate = responseData.dt;
+            const cityIcon = responseData.weather[0].icon;
             const cityTemp = responseData.main.temp;
             const cityWind = responseData.wind.speed;
             const cityHumidity = responseData.main.humidity;
@@ -36,13 +35,19 @@ function weatherData(lat, lon) {
             name.textContent = `${cityName}`;
             name.style.marginRight = '10px';
 
-            const milliseconds = cityDate * 1000; // Convert Unix timestamp to milliseconds
+            const milliseconds = cityDate * 1000; //convert Unix timestamp to milliseconds
             const dateObject = new Date(milliseconds);
-            const formattedDate = dateObject.toLocaleDateString(); // Format the date portion
+            const formattedDate = dateObject.toLocaleDateString(); //format the date
 
             const date = document.createElement('h1'); //prints date
             date.textContent = `(${formattedDate})`;
             newDiv.append(name, date);
+
+            const icon = `https://openweathermap.org/img/w/${cityIcon}.png`;
+            const iconImg = document.createElement('img');
+            iconImg.src = icon;
+            iconImg.alt = 'weather icon';
+            newDiv.appendChild(iconImg);
 
             const newDiv2 = document.createElement('div'); //creates another div for temp, wind, humidity
 
@@ -63,14 +68,14 @@ function weatherData(lat, lon) {
             infoBox.appendChild(newDiv); //prints newDiv (row)
             infoBox.appendChild(newDiv2); //prints newDiv2 (column) underneath
         })
-        .catch(error => {
-            console.error('Error fetching data:', error);
+        .catch(error => { //logs error if one occurs
+            console.error(error);
         });
 }
 
-searchButton.addEventListener('click', function() {
-    const city = searchText.value.trim();
-    const geocoding = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openKey}`;
+searchButton.addEventListener('click', function() { //button activates on click
+    const city = searchText.value.trim(); //pulls the value typed into the search bar
+    const geocoding = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openKey}`; //geocoding api used to find lat and lon with a city name
 
     fetch(geocoding)
         .then(response => {
@@ -83,9 +88,9 @@ searchButton.addEventListener('click', function() {
             const lat = data.coord.lat;
             const lon = data.coord.lon;
 
-            weatherData(lat, lon);
+            weatherData(lat, lon); //call the weatherData function from earlier that uses the lat and lon to find the city and info for the openWeather api
         })
-        .catch(error => {
+        .catch(error => { //logs error if one occurs
             console.error(error);
         });
 });

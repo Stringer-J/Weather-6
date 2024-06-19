@@ -71,11 +71,12 @@ function weatherData(lat, lon) {
             infoBox.appendChild(newDiv); //prints newDiv (row)
             infoBox.appendChild(newDiv2); //prints newDiv2 (column) underneath
 
+            if (!previousButton(cityName)) {
             const historyButton = document.createElement('button'); //creates a button to access previous searches
             historyButton.textContent = `${cityName}`;
             historyBox.appendChild(historyButton);
 
-            historyButton.addEventListener('click', function() {
+            historyButton.addEventListener('click', function() { //when you click the button, it loads and prints city weather info
                 infoBox.innerHTML = '';
                 const city2 = cityName; //
                 const geocoding = `https://api.openweathermap.org/data/2.5/weather?q=${city2}&appid=${openKey}`; //geocoding api used to find lat and lon with a city name
@@ -97,10 +98,20 @@ function weatherData(lat, lon) {
                         console.error(error);
                     });
             })
-        })
+        }})
         .catch(error => { //logs error if one occurs
             console.error(error);
         });
+}
+
+function previousButton(cityName) { //checks if you've already searched for this city and created a button in the history box
+    const buttons = historyBox.getElementsByTagName('button');
+    for (let i = 0; i < buttons.length; i++) {
+        if (buttons[i].textContent === cityName) {
+            return true;
+        }
+    }
+    return false;
 }
 
 searchButton.addEventListener('click', function() { //button activates on click

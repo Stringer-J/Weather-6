@@ -1,6 +1,7 @@
 const searchText = document.getElementById('searchCity'); //finds input box for searching for cities
 const searchButton = document.getElementById('searchButton'); //finds search button
 const infoBox = document.querySelector('.info'); //finds info div for printing weather information
+const historyBox = document.querySelector('.history'); //finds history div for putting new history buttons
 
 const openKey = '06a798cc207b1bc18fa799b37f5e6c32'; //api key so api actually works
 
@@ -13,15 +14,16 @@ function weatherData(lat, lon) {
     fetch(allOrigins)
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok'); //shows error if there is no api response
             }
-            return response.json();
+            return response.json(); //returns whatever you wanted from the api
         })
         .then(data => {
             const responseData = JSON.parse(data.contents); //allOrigins wraps the response in "contents"
-            console.log(responseData);
+            console.log(responseData); //logs response so I know what I'm working with
 
-            const cityName = responseData.name;
+            //creates variables for all the different things I want to display from the response object
+            const cityName = responseData.name; 
             const cityDate = responseData.dt;
             const cityIcon = responseData.weather[0].icon;
             const cityTemp = responseData.main.temp;
@@ -41,6 +43,7 @@ function weatherData(lat, lon) {
 
             const date = document.createElement('h1'); //prints date
             date.textContent = `(${formattedDate})`;
+            date.style.marginRight = '10px';
             newDiv.append(name, date);
 
             const icon = `https://openweathermap.org/img/w/${cityIcon}.png`;
@@ -67,6 +70,10 @@ function weatherData(lat, lon) {
             infoBox.innerHTML = ''; //clears old result before printing new result
             infoBox.appendChild(newDiv); //prints newDiv (row)
             infoBox.appendChild(newDiv2); //prints newDiv2 (column) underneath
+
+            const historyButton = document.createElement('button'); //creates a button to access previous searches
+            historyButton.textContent = `${cityName}`;
+            historyBox.appendChild(historyButton);
         })
         .catch(error => { //logs error if one occurs
             console.error(error);

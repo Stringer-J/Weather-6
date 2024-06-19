@@ -74,6 +74,29 @@ function weatherData(lat, lon) {
             const historyButton = document.createElement('button'); //creates a button to access previous searches
             historyButton.textContent = `${cityName}`;
             historyBox.appendChild(historyButton);
+
+            historyButton.addEventListener('click', function() {
+                infoBox.innerHTML = '';
+                const city2 = cityName; //
+                const geocoding = `https://api.openweathermap.org/data/2.5/weather?q=${city2}&appid=${openKey}`; //geocoding api used to find lat and lon with a city name
+            
+                fetch(geocoding)
+                    .then(response => {
+                        if(!response.ok) {
+                            throw new Error('City not found');
+                        }
+                            return response.json();
+                    })
+                    .then(data => {
+                        const lat = data.coord.lat;
+                        const lon = data.coord.lon;
+            
+                        weatherData(lat, lon); //call the weatherData function from earlier that uses the lat and lon to find the city and info for the openWeather api
+                    })
+                    .catch(error => { //logs error if one occurs
+                        console.error(error);
+                    });
+            })
         })
         .catch(error => { //logs error if one occurs
             console.error(error);

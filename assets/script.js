@@ -71,6 +71,45 @@ function weatherData(lat, lon) {
             infoBox.appendChild(newDiv); //prints newDiv (row)
             infoBox.appendChild(newDiv2); //prints newDiv2 (column) underneath
 
+            const fiveDay = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${openKey}`;
+
+            fetch(fiveDay)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const forecastData = data.list;
+
+                    for (let i = 0; i < 5; i++) {
+                        console.log('forecast data:', data);
+                        const forecast = forecastData[i];
+                        const forecastDate = new Date(forecast.dt * 1000);
+                        const forecastImg = forecast.weather[0].icon;
+                        const forecastTemp = ((forecast.main.temp - 273.15) * 1.8 + 32).toFixed(2);
+                        const forecastWind = forecast.wind.speed;
+                        const forecastHumidity = forecast.main.humidity;
+
+                        const forecastDiv = document.createElement('div');
+
+                        const formattedDate2 = forecastDate.toLocaleDateString();
+            
+                        const date2 = document.createElement('h1'); //prints date
+                        date2.textContent = `(${formattedDate2})`;
+                        forecastDiv.appendChild(date2);
+
+                        const icon2 = `https://openweathermap.org/img/w/${forecastImg}.png`;
+                        const iconImg2 = document.createElement('img');
+                        iconImg2.src = icon2;
+                        iconImg2.alt = 'weather icon';
+                        forecastDiv.appendChild(iconImg2);
+
+                        infoBox.appendChild(forecastDiv);
+                    }
+                })
+
             if (!previousButton(cityName)) {
             const historyButton = document.createElement('button'); //creates a button to access previous searches
             historyButton.textContent = `${cityName}`;

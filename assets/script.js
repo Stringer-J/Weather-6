@@ -100,7 +100,8 @@ function weatherData(lat, lon) {
                         .catch(error => { //logs error if one occurs
                             console.error(error);
                         });
-                    })}
+                    })
+                };
 
             const fiveDay = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${openKey}`;
 
@@ -214,9 +215,10 @@ searchButton.addEventListener('click', function() { //button activates on click
             const lon = data.coord.lon;
 
             weatherData(lat, lon); //call the weatherData function from earlier that uses the lat and lon to find the city and info for the openWeather api
+
+            searchText.value = '';
         })
         .catch(error => { //logs error if one occurs
             console.error(error);
         });
 });
-

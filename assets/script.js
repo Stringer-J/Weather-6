@@ -72,6 +72,36 @@ function weatherData(lat, lon) {
             infoBox.appendChild(newDiv); //prints newDiv (row)
             infoBox.appendChild(newDiv2); //prints newDiv2 (column) underneath
 
+            if (!previousButton(cityName)) {
+                const historyButton = document.createElement('button'); //creates a button to access previous searches
+                historyButton.style.width = '100%';
+                historyButton.style.marginBottom = '4%';
+                historyButton.textContent = `${cityName}`;
+                historyBox.appendChild(historyButton);
+    
+                historyButton.addEventListener('click', function() { //when you click the button, it loads and prints city weather info
+                    infoBox.innerHTML = '';
+                    const city2 = cityName; //
+                    const geocoding = `https://api.openweathermap.org/data/2.5/weather?q=${city2}&appid=${openKey}`; //geocoding api used to find lat and lon with a city name
+                
+                    fetch(geocoding)
+                        .then(response => {
+                            if(!response.ok) {
+                                throw new Error('City not found');
+                            }
+                                return response.json();
+                        })
+                        .then(data => {
+                            const lat = data.coord.lat;
+                            const lon = data.coord.lon;
+                
+                            weatherData(lat, lon); //call the weatherData function from earlier that uses the lat and lon to find the city and info for the openWeather api
+                        })
+                        .catch(error => { //logs error if one occurs
+                            console.error(error);
+                        });
+                    })}
+
             const fiveDay = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${openKey}`;
 
             fetch(fiveDay)
@@ -112,10 +142,10 @@ function weatherData(lat, lon) {
                         const forecast = groupedByDay[date3]; // Get the first forecast for this day
 
                         const forecastDayDiv = document.createElement('div');
-                        forecastDayDiv.style.padding = '5px';
+                        forecastDayDiv.style.padding = '10px';
                         forecastDayDiv.style.marginRight = '40px';
                         forecastDayDiv.style.marginTop = '20px';
-                        forecastDayDiv.style.marginBottom = '25%';
+                        forecastDayDiv.style.marginBottom = '20%';
                         forecastDayDiv.style.color = 'white';
                         forecastDayDiv.style.backgroundColor = 'black';
     
@@ -155,34 +185,8 @@ function weatherData(lat, lon) {
                 })
                 })
 
-            if (!previousButton(cityName)) {
-            const historyButton = document.createElement('button'); //creates a button to access previous searches
-            historyButton.textContent = `${cityName}`;
-            historyBox.appendChild(historyButton);
-
-            historyButton.addEventListener('click', function() { //when you click the button, it loads and prints city weather info
-                infoBox.innerHTML = '';
-                const city2 = cityName; //
-                const geocoding = `https://api.openweathermap.org/data/2.5/weather?q=${city2}&appid=${openKey}`; //geocoding api used to find lat and lon with a city name
             
-                fetch(geocoding)
-                    .then(response => {
-                        if(!response.ok) {
-                            throw new Error('City not found');
-                        }
-                            return response.json();
-                    })
-                    .then(data => {
-                        const lat = data.coord.lat;
-                        const lon = data.coord.lon;
-            
-                        weatherData(lat, lon); //call the weatherData function from earlier that uses the lat and lon to find the city and info for the openWeather api
-                    })
-                    .catch(error => { //logs error if one occurs
-                        console.error(error);
-                    });
-            })
-        }}
+        }
 
 function previousButton(cityName) { //checks if you've already searched for this city and created a button in the history box
     const buttons = historyBox.getElementsByTagName('button');

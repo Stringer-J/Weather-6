@@ -47,7 +47,7 @@ function weatherData(lat, lon) {
             date.style.marginRight = '10px';
             newDiv.append(name, date);
 
-            const icon = `https://openweathermap.org/img/w/${cityIcon}.png`;
+            const icon = `https://openweathermap.org/img/w/${cityIcon}.png`; //uses url to find correct image and then prints it to page
             const iconImg = document.createElement('img');
             iconImg.src = icon;
             iconImg.alt = 'weather icon';
@@ -105,7 +105,7 @@ function weatherData(lat, lon) {
 
             const fiveDay = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${openKey}`;
 
-            fetch(fiveDay)
+            fetch(fiveDay) //fetch request for the next 5 day forecast
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -115,7 +115,7 @@ function weatherData(lat, lon) {
                 .then(data => {
                     const forecastData = data.list;
 
-                    const groupedByDay = {};
+                    const groupedByDay = {}; //array created to put the first forecast of each day in
 
                     //calculates tomorrow's date in UTC format
                     const tomorrow = new Date();
@@ -123,7 +123,7 @@ function weatherData(lat, lon) {
                     tomorrow.setHours(0, 0, 0, 0);
                     const tomorrowUTC = tomorrow.getTime() / 1000;
 
-                    forecastData.forEach(forecast => {
+                    forecastData.forEach(forecast => { //sets date to the format i wanted (mm/dd/yyyy) and then puts it in an array
                         const timestamp = forecast.dt;
                         if (timestamp >= tomorrowUTC) {
                         const date3 = new Date(timestamp * 1000).toLocaleDateString('en-US', {
@@ -137,12 +137,12 @@ function weatherData(lat, lon) {
                         }
                     })
 
-                    infoBox2.innerHTML = '';
+                    infoBox2.innerHTML = ''; //clears previous info on page
 
                     Object.keys(groupedByDay).forEach(date3 => {
                         const forecast = groupedByDay[date3]; // Get the first forecast for this day
 
-                        const forecastDayDiv = document.createElement('div');
+                        const forecastDayDiv = document.createElement('div'); //recreates all the elements from the original fetch request but for each item in the array
                         forecastDayDiv.style.padding = '10px';
                         forecastDayDiv.style.marginRight = '40px';
                         forecastDayDiv.style.marginTop = '20px';
@@ -216,7 +216,7 @@ searchButton.addEventListener('click', function() { //button activates on click
 
             weatherData(lat, lon); //call the weatherData function from earlier that uses the lat and lon to find the city and info for the openWeather api
 
-            searchText.value = '';
+            searchText.value = ''; //clears the searchText value after you click the search button
         })
         .catch(error => { //logs error if one occurs
             console.error(error);

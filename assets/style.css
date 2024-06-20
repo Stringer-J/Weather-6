@@ -25,19 +25,23 @@
 }
 
 .search {
-    background-color: brown;
+    /* background-color: brown; */
     position: absolute;
     left: 0;
     bottom: 0;
     height: 87%;
-    width: 25%;
+    width: 18%;
     margin-top: .5%;
     margin-bottom: .5%;
     margin-left: 2.5%;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .searchInfoContainer {
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
     position: absolute;
     right: 0;
     bottom: 0;
@@ -52,16 +56,17 @@
 }
 
 .info {
-    background-color: goldenrod;
+    /* background-color: goldenrod; */
     position: relative;
     right: 0;
     top: 0;
     height: 30%;
     width: 100%;
+    border: 1px solid black;
 }
 
 .info2 {
-    background-color: pink;
+    /* background-color: pink; */
     position: relative;
     right: 0;
     bottom: 0;

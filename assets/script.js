@@ -112,7 +112,12 @@ function weatherData(lat, lon) {
                         const forecast = groupedByDay[date3]; // Get the first forecast for this day
 
                         const forecastDayDiv = document.createElement('div');
-                        forecastDayDiv.style.marginRight = '30px';
+                        forecastDayDiv.style.padding = '5px';
+                        forecastDayDiv.style.marginRight = '40px';
+                        forecastDayDiv.style.marginTop = '20px';
+                        forecastDayDiv.style.marginBottom = '25%';
+                        forecastDayDiv.style.color = 'white';
+                        forecastDayDiv.style.backgroundColor = 'black';
     
                         const date2 = document.createElement('h2');
                         date2.textContent = `${date3}`;

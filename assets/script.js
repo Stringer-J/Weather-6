@@ -1,6 +1,7 @@
 const searchText = document.getElementById('searchCity'); //finds input box for searching for cities
 const searchButton = document.getElementById('searchButton'); //finds search button
 const infoBox = document.querySelector('.info'); //finds info div for printing weather information
+const infoBox2 = document.querySelector('.info2'); //finds 2nd info box for 5 day forecast
 const historyBox = document.querySelector('.history'); //finds history div for putting new history buttons
 
 const openKey = '06a798cc207b1bc18fa799b37f5e6c32'; //api key so api actually works
@@ -83,22 +84,45 @@ function weatherData(lat, lon) {
                 .then(data => {
                     const forecastData = data.list;
 
-                    for (let i = 0; i < 5; i++) {
+                    const groupedByDay = {};
+
+                    forecastData.forEach(forecast => {
+                        const timestamp = forecast.dt * 1000;
+                        const date3 = new Date(timestamp).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        if (!groupedByDay[date3]) {
+                            groupedByDay[date3] = [];
+                        }
+                        groupedByDay[date3].push(forecast);
+                    })
+
+                    infoBox2.innerHTML = '';
+
+                    Object.keys(groupedByDay).forEach(date3 => {
                         console.log('forecast data:', data);
-                        const forecast = forecastData[i];
-                        const forecastDate = new Date(forecast.dt * 1000);
+                        const forecastForDay = groupedByDay[date3];
+
+                        const forecastDayDiv = document.createElement('div');
+            
+                        const date2 = document.createElement('h2');
+                        date2.textContent = `${date3}`;
+                        forecastDayDiv.appendChild(date2);
+
+                        forecastForDay.forEach(forecast => {
                         const forecastImg = forecast.weather[0].icon;
                         const forecastTemp = ((forecast.main.temp - 273.15) * 1.8 + 32).toFixed(2);
                         const forecastWind = forecast.wind.speed;
                         const forecastHumidity = forecast.main.humidity;
 
                         const forecastDiv = document.createElement('div');
-
-                        const formattedDate2 = forecastDate.toLocaleDateString();
             
-                        const date2 = document.createElement('h1'); //prints date
-                        date2.textContent = `(${formattedDate2})`;
-                        forecastDiv.appendChild(date2);
+                        // const date2 = document.createElement('h1'); //prints date
+                        // date2.textContent = `(${date3})`;
+                        // forecastDiv.appendChild(date2);
 
                         const icon2 = `https://openweathermap.org/img/w/${forecastImg}.png`;
                         const iconImg2 = document.createElement('img');
@@ -106,8 +130,23 @@ function weatherData(lat, lon) {
                         iconImg2.alt = 'weather icon';
                         forecastDiv.appendChild(iconImg2);
 
-                        infoBox.appendChild(forecastDiv);
-                    }
+                        const temp2 = document.createElement('p'); //prints converted temp
+                        temp2.textContent = `Temp: ${forecastTemp}°F`;
+                        forecastDiv.appendChild(temp2);
+            
+                        const wind2 = document.createElement('p'); //prints wind speed
+                        wind2.textContent = `Wind: ${forecastWind} MPH`;
+                        forecastDiv.appendChild(wind2);
+            
+                        const humidity2 = document.createElement('p'); //prints humidity
+                        humidity2.textContent = `Humidity: ${forecastHumidity} %`;
+                        forecastDiv.appendChild(humidity2);
+
+                        forecastDayDiv.appendChild(forecastDiv);
+                        infoBox2.appendChild(forecastDiv);
+                    })
+                    
+                })
                 })
 
             if (!previousButton(cityName)) {

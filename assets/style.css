@@ -24,34 +24,47 @@
     justify-content: center;
 }
 
+.search {
+    background-color: brown;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 87%;
+    width: 25%;
+    margin-top: .5%;
+    margin-bottom: .5%;
+    margin-left: 2.5%;
+}
+
 .searchInfoContainer {
     background-color: aquamarine;
     position: absolute;
+    right: 0;
     bottom: 0;
     height: 87%;
-    width: 95%;
+    width: 75%;
     margin-top: .5%;
     margin-bottom: .5%;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
+    margin-right: 2.5%;
 
     display: flex;
-}
-
-.search {
-    background-color: brown;
-    position: relative;
-    left: 0;
-    height: 100%;
-    width: 30%;
+    flex-direction: column;
 }
 
 .info {
     background-color: goldenrod;
     position: relative;
     right: 0;
-    height: 100%;
-    width: 70%;
+    top: 0;
+    height: 30%;
+    width: 100%;
+}
+
+.info2 {
+    background-color: pink;
+    position: relative;
+    right: 0;
+    bottom: 0;
+    height: 70%;
+    width: 100%;
 }

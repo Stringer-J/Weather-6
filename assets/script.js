@@ -86,43 +86,44 @@ function weatherData(lat, lon) {
 
                     const groupedByDay = {};
 
+                    //calculates tomorrow's date in UTC format
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    tomorrow.setHours(0, 0, 0, 0);
+                    const tomorrowUTC = tomorrow.getTime() / 1000;
+
                     forecastData.forEach(forecast => {
-                        const timestamp = forecast.dt * 1000;
-                        const date3 = new Date(timestamp).toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
+                        const timestamp = forecast.dt;
+                        if (timestamp >= tomorrowUTC) {
+                        const date3 = new Date(timestamp * 1000).toLocaleDateString('en-US', {
+                            month: 'numeric',
+                            day: 'numeric',
+                            year: '2-digit'
                         });
                         if (!groupedByDay[date3]) {
-                            groupedByDay[date3] = [];
+                            groupedByDay[date3] = forecast;
                         }
-                        groupedByDay[date3].push(forecast);
+                        }
                     })
 
                     infoBox2.innerHTML = '';
 
                     Object.keys(groupedByDay).forEach(date3 => {
-                        console.log('forecast data:', data);
-                        const forecastForDay = groupedByDay[date3];
+                        const forecast = groupedByDay[date3]; // Get the first forecast for this day
 
                         const forecastDayDiv = document.createElement('div');
-            
+                        forecastDayDiv.style.marginRight = '30px';
+    
                         const date2 = document.createElement('h2');
                         date2.textContent = `${date3}`;
                         forecastDayDiv.appendChild(date2);
 
-                        forecastForDay.forEach(forecast => {
                         const forecastImg = forecast.weather[0].icon;
                         const forecastTemp = ((forecast.main.temp - 273.15) * 1.8 + 32).toFixed(2);
                         const forecastWind = forecast.wind.speed;
                         const forecastHumidity = forecast.main.humidity;
 
                         const forecastDiv = document.createElement('div');
-            
-                        // const date2 = document.createElement('h1'); //prints date
-                        // date2.textContent = `(${date3})`;
-                        // forecastDiv.appendChild(date2);
 
                         const icon2 = `https://openweathermap.org/img/w/${forecastImg}.png`;
                         const iconImg2 = document.createElement('img');
@@ -130,22 +131,22 @@ function weatherData(lat, lon) {
                         iconImg2.alt = 'weather icon';
                         forecastDiv.appendChild(iconImg2);
 
-                        const temp2 = document.createElement('p'); //prints converted temp
+                        const temp2 = document.createElement('p');
                         temp2.textContent = `Temp: ${forecastTemp}°F`;
                         forecastDiv.appendChild(temp2);
-            
-                        const wind2 = document.createElement('p'); //prints wind speed
+
+                        const wind2 = document.createElement('p');
                         wind2.textContent = `Wind: ${forecastWind} MPH`;
                         forecastDiv.appendChild(wind2);
-            
-                        const humidity2 = document.createElement('p'); //prints humidity
+
+                        const humidity2 = document.createElement('p');
                         humidity2.textContent = `Humidity: ${forecastHumidity} %`;
                         forecastDiv.appendChild(humidity2);
 
                         forecastDayDiv.appendChild(forecastDiv);
-                        infoBox2.appendChild(forecastDiv);
-                    })
-                    
+
+                        infoBox2.appendChild(forecastDayDiv);
+                    })      
                 })
                 })
 
@@ -176,11 +177,7 @@ function weatherData(lat, lon) {
                         console.error(error);
                     });
             })
-        }})
-        .catch(error => { //logs error if one occurs
-            console.error(error);
-        });
-}
+        }}
 
 function previousButton(cityName) { //checks if you've already searched for this city and created a button in the history box
     const buttons = historyBox.getElementsByTagName('button');
